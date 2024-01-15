@@ -18,17 +18,17 @@
             <div  class="rounded-sm border border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
             @if($module=='tours')
         	  	<livewire:dashboard.tours-management />  
-           	@elseif($module=='tour-category')
-           		Under Development
-       		@elseif($module=='destinations')
-       			<livewire:dashboard.destinations-management :module_title=$module_title /> 
+           	@elseif($module ==='tour-category')
+             <livewire:dashboard.tours-category-management />
+       		  @elseif($module=='destinations')
+       			  <livewire:dashboard.destinations-management :module_title=$module_title /> 
            	@elseif($module=='destination-category')
        			 Under Development 
-   			@elseif($module=='banners')
+   			    @elseif($module=='banners')
        			<livewire:dashboard.banner-management />
-       		@elseif($module=='testimonials')
+       		  @elseif($module=='testimonials')
        			 Under Development 
-       		@elseif($module=='payment-information')	 
+       		  @elseif($module=='payment-information')	 
        			 <livewire:dashboard.payment-information-listing />  
             @else
             	Sorry you are not authorized to access this section
