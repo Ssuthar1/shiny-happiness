@@ -24,7 +24,7 @@ class TestimonialManagement extends Component
 	public $s; 
     protected $queryString = ['s'];
  
-    public  $testimonial_id,$title,$meta_title,$meta_tag_keywords,$meta_tag_descriptions,$short_description, $description,$status;
+    public  $testimonial_id,$title,$name,$short_description,$status=1,$designation;
     public $module_title='testimonial',$buttonText='';
     public $isloading=true;
  
@@ -43,6 +43,7 @@ class TestimonialManagement extends Component
         $data  = Testimonial::where('title', 'like', '%'.$this->s.'%')->orWhere('description', 'like', '%'.$this->s.'%');
         $data = $data->orderby('id','DESC')->paginate(10);
         $this->isloading=false;
+        // dd( );
         return view('livewire.dashboard.testimonials.index',compact('data'));
     }
     public function updatedPhoto()
@@ -60,15 +61,14 @@ class TestimonialManagement extends Component
 
     private function resetInputFields(){
         $this->title = '';
-        $this->meta_title = '';
-        $this->meta_tag_keywords = '';
-        $this->meta_tag_descriptions = '';
+        $this->name = '';
         $this->short_description = '';
-        $this->description = '';
-        $this->status = '';    
+        $this->designation = '';
+        $this->status = '1';    
         $this->featured_image_url = '';  
         $this->gallery=array();    
         $this->mode = 'list';
+        $this->reset(['testimonial_id', 'mode','photo']);
     }
 
     public function add()
@@ -79,17 +79,22 @@ class TestimonialManagement extends Component
     {
         $validatedData = $this->validate([
             'title' => 'required',
-            'meta_title' => 'required',
-            'meta_tag_keywords' => '',
-            'meta_tag_descriptions' => '',
-            'short_description' => '',
-            'description' => '',
+            'name' => 'required',
+            'short_description' => 'required',
+            'designation' => 'required',
             'status' => '',
             'photo' => 'nullable|image|max:5000', 
             'gallery.*' => 'nullable|image|max:5000',
         ]);
-  
-        $dataInfo = Testimonial::create($validatedData);
+
+        $data = array();
+        $data['title']                  = $this->title;
+        $data['name']                   = $this->name;        
+        $data['description']            = $this->short_description;
+        $data['designation']            = $this->designation;
+        $data['status']                 = $this->status; 
+
+        $dataInfo = Testimonial::create($data);
         $id = $dataInfo->id;
         if(!empty($validatedData['photo']))
         {
@@ -104,7 +109,7 @@ class TestimonialManagement extends Component
             }
         }
   
-        session()->flash('message', 'Destination Category Created Successfully.');
+        session()->flash('message', 'Testimonial Created Successfully.');
   
         $this->resetInputFields();
     }
@@ -114,11 +119,9 @@ class TestimonialManagement extends Component
         $editInfo = Testimonial::findOrFail($id);
         $this->testimonial_id = $id;
         $this->title = $editInfo->title;
-        $this->meta_title = $editInfo->meta_title;
-        $this->meta_tag_keywords = $editInfo->meta_tag_keywords;
-        $this->meta_tag_descriptions = $editInfo->meta_tag_descriptions;
-        $this->short_description = $editInfo->short_description;
-        $this->description = $editInfo->description;
+        $this->name = $editInfo->name;
+        $this->short_description = $editInfo->description;
+        $this->designation = $editInfo->designation;
         $this->status = $editInfo->status;
         $this->updateMode = true;
         $this->mode = 'edit';
@@ -148,11 +151,9 @@ class TestimonialManagement extends Component
     {
         $validatedData = $this->validate([
             'title' => 'required',
-            'meta_title' => 'required',
-            'meta_tag_keywords' => '',
-            'meta_tag_descriptions' => '',
-            'short_description' => '',
-            'description' => '',
+            'name' => 'required',
+            'short_description' => 'required',
+            'designation' => 'required',
             'status' => '',
             'photo' => 'nullable|image|max:5000', 
             'gallery.*' => 'nullable|image|max:5000',
@@ -161,11 +162,9 @@ class TestimonialManagement extends Component
         $data = Testimonial::find($this->testimonial_id);
         $data->update([
             'title' => $this->title,
-            'meta_title' => $this->meta_title,
-            'meta_tag_keywords' => $this->meta_tag_keywords,
-            'meta_tag_descriptions' => $this->meta_tag_descriptions,
-            'short_description' => $this->short_description,
-            'description' => $this->description,
+            'name' => $this->name,
+            'description' => $this->short_description,
+            'designation' => $this->designation,
             'status' => $this->status,
         ]);
          $id = $this->testimonial_id;
@@ -189,7 +188,7 @@ class TestimonialManagement extends Component
         }
         $this->updateMode = false;
   
-        session()->flash('message', 'Destination Updated Successfully.');
+        session()->flash('message', 'Testimonial Updated Successfully.');
         $this->resetInputFields();
     }
 
@@ -207,7 +206,7 @@ class TestimonialManagement extends Component
     public function delete($id)
     {
         Testimonial::find($id)->delete();
-        session()->flash('message', 'Destination Category Deleted Successfully.');
+        session()->flash('message', 'Testimonial Deleted Successfully.');
     }
      public function deleteImage($id)
     {

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Livewire\Frontend;
+namespace App\Http\Livewire\Frontend\Old;
 
 use Livewire\Component;
 use App\Models\Booking;

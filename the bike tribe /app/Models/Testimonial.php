@@ -12,7 +12,7 @@ class Testimonial extends Model
 
     protected $fillable = [  
         'title', 
-        'descriptions', 
+        'description', 
         'name',
         'designation',
         'image',
@@ -21,4 +21,9 @@ class Testimonial extends Model
     ];
 
     protected $guarded = ['id', 'created_at', 'updated_at'];
+
+    public function mainImage()
+    {
+         return $this->hasOne(ImageInfo::class,'property_id','id')->where('image_position','main_image');
+    }
 }
